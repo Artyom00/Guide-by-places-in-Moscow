@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% load convert_timestamp %}
+
+{% block title  %}
+{{ record.title|capfirst }}
+{% endblock title %}
+
+{% block content %}
+<div class="container my-4 text-center">
+    <div class="row">
+        <div class="col-md">
+            <p class="h3">
+                {{ record.title|capfirst }}
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <p class="fs-5 text-center mb-4">{{ record.description }}</p>
+</div>
+
+<div class="container" style="max-width: 745px;">
+    {% include 'handbook/includes/carousel.html' %}
+</div>
+
+<div class="container body-text mt-5">
+    <p class="h4 mb-4">Описание</p>
+    <p class="place-detail">{{ record.body_text|linebreaks }}</p>
+</div>
+
+<div class="container tags mt-4">
+    <p class="h4 mb-4">Теги</p>
+    {% for tag in record.tags.all %}
+    <a class="btn btn-secondary btn-sm me-2 mb-2" href="{% url 'tag_objects' tag.slug %}" role="button">{{ tag.title }}</a>
+    {% endfor %}
+</div>
+
+<div class="container location mt-4">
+    <div class="row">
+        {% if record.coordinates.lat is not None and record.coordinates.lon is not None %}
+        <hr>
+        <p class="h4 mb-4">Расположение</p>
+        <div class="col-sm mb-3" id="map" style="width:500px; height:400px">
+            <script type="text/javascript">
+                ymaps.ready(init);
+                function init(){
+
+                    var myMap = new ymaps.Map("map", {
+                        center: [{{ record.coordinates.lat|safe }}, {{ record.coordinates.lon|safe }}],
+                        zoom: 17,
+                        controls: []
+                    });
+
+                    var marker = new ymaps.Placemark([{{ record.coordinates.lat|safe }}, {{ record.coordinates.lon|safe }}], {
+                        hintContent: "{{ record.title }}"
+                    });
+                    myMap.geoObjects.add(marker);
+                    myMap.controls.add('zoomControl');
+                }
+            </script>
+        </div>
+        {% endif %}
+        <div class="col-sm ms-5">
+            {% if record.address %}
+            <div class="address mb-4">
+                <p class="h4">Адрес</p>
+                <p>{{ record.address }}</p>
+            </div>
+            {% endif %}
+            {% if record.subway.all %}
+            <div class="subway">
+                <p class="h4">Метро</p>
+                <p>{{ record.subway.all|join:', ' }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if record.schedule or record.site or record.phone %}
+<div class="container other mt-4">
+    <div class="row">
+        <div class="col-sm">
+            <hr>
+            <p class="h4 mb-4">Дополнительная информация</p>
+            {% if record.schedule %}
+            <div class="timetable">
+                <p class="h6">Расписание</p>
+                <p>{{ record.schedule }}</p>
+            </div>
+            {% endif %}
+            {% if record.site %}
+            <div class="site mt-4 mb-3">
+                <p class="h6">Сайт</p>
+                <a class="btn btn-primary btn-sm" href="{{ record.site }}" role="button">Перейти</a>
+            </div>
+            {% endif %}
+            {% if record.phone %}
+            <div class="phone mt-4">
+                <p class="h6">Телефон</p>
+                <p>{{ record.phone }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if record.events_set.all %}
+<div class="container">
+    <hr>
+    <p class="h4 my-4">Предстоящие события</p>
+    <div class="row">
+        <div class="col-md">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Название</th>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Цена</th>
+                    <th scope="col">Ссылка</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for event in record.events_set.all|dictsort:'dates.0.start' %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ event.title }}</td>
+                    <td>{{ event.dates.0.start|print_timestamp}}</td>
+                    <td>{{ event.price }}</td>
+                    <td><a class="btn btn-primary btn-sm" href="{% url 'event_description' event.slug %}" role="button">Подробнее</a></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock content %}

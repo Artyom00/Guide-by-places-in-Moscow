@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}
+Создание новой станции метро
+{% endblock title %}
+
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-3 mx-auto">
+            <form class="" action="{% url 'create_station' %}" method="post">
+                {% csrf_token %}
+                <div class="mt-4">
+                    {% if subway_form.name.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ subway_form.name.errors }}
+                    </div>
+                    {% endif %}
+
+                    {{ subway_form.name.label }}
+                    {{ subway_form.name }}
+                </div>
+                <button type="submit" class="btn btn-primary mt-4">Создать</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

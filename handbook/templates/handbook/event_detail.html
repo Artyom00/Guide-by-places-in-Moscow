@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load convert_timestamp object_type %}
+
+{% block title  %}
+{{ record.title|capfirst }}
+{% endblock title %}
+
+{% block content %}
+<div class="container my-4 text-center">
+    <div class="row">
+        <div class="col-md">
+            <p class="h3">
+                {{ record.title|capfirst }}
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <p class="fs-5 text-center mb-4">{{ record.description }}</p>
+</div>
+
+<div class="container" style="max-width: 745px;">
+    {% include 'handbook/includes/carousel.html' %}
+</div>
+
+<div class="container body-text mt-5">
+    <p class="h4 mb-4">Описание</p>
+    <p class="place-detail">{{ record.body_text|linebreaksbr }}</p>
+</div>
+
+<div class="container tags mt-4">
+    <p class="h4 mb-4">Теги</p>
+    {% if record|object_type == 'History' %}
+        {% for tag in record.tags_list %}
+        <span class="btn btn-secondary btn-sm me-2 mb-2">{{ tag }}</span>
+        {% endfor %}
+    {% else %}
+        {% for tag in record.tags.all %}
+        <a class="btn btn-secondary btn-sm me-2 mb-2" href="{% url 'tag_objects' tag.slug %}" role="button">{{ tag.title}}</a>
+        {% endfor %}
+    {% endif %}
+</div>
+
+{% if record|object_type == 'History' %}
+<div class="container dates mt-4">
+    <hr>
+    <p class="h4 mb-4">Прошедшие события</p>
+    {% for dates in record.dates %}
+    <p>{{ dates.start|print_timestamp }} - {{ dates.end|print_timestamp }}</p>
+    {% endfor %}
+</div>
+{% else %}
+<div class="container dates mt-4">
+    <hr>
+    <p class="h4 mb-4">Предстоящие события</p>
+    {% for dates in record.dates %}
+        <p>{{ dates.start|print_timestamp }} - {{ dates.end|print_timestamp }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if old_events is not None %}
+<div class="container dates mt-4">
+    <hr>
+    <p class="h4 mb-4">Прошедшие события</p>
+    {% for dates in old_events %}
+        <p>{{ dates.start|print_timestamp }} - {{ dates.end|print_timestamp }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="container other my-4">
+    <hr>
+    <p class="h4">Дополнительная информация</p>
+    <div class="container age-restriction my-4">
+        <p class="h6 mb-4">Возрастное ограничение</p>
+        <p>{{ record.age_restriction }}</p>
+    </div>
+
+    {% if record.price %}
+    <div class="container price my-4">
+        <p class="h6 mb-4">Цена</p>
+        <p>{{ record.price }}</p>
+    </div>
+    {% endif %}
+
+    <div class="container place my-4">
+        <p class="h6 mb-4">Место проведения</p>
+        <p><a href="{% url 'place_description' record.place.slug %}">{{ record.place.title }}</a></p>
+    </div>
+</div>
+{% endblock content %}

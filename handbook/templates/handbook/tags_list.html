@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}
+Список тегов
+{% endblock title %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md">
+            <p class="h3 text-center">
+                Список всех тегов
+            </p>
+        </div>
+    </div>
+</div>
+
+{% for tag in page.object_list %}
+<div class="list-group container my-4" style="max-width: 540px;">
+    <a href="{% url 'tag_objects' tag.slug %}"
+       class="list-group-item list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+            <h6 class="mb-1">{{ tag.title }}</h6>
+        </div>
+    </a>
+</div>
+{% endfor %}
+
+{% endblock content %}

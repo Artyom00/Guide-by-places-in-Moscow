@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}
+Редактирование тега "{{ tag.title|capfirst }}"
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-3 mx-auto">
+            <form class="" action="{% url 'edit_tag' tag.slug %}" method="post">
+                {% csrf_token %}
+                <div class="mt-4">
+                    {% if form.title.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form.title.errors }}
+                    </div>
+                    {% endif %}
+
+                    {{ form.title.label }}
+                    {{ form.title }}
+                </div>
+                <button type="submit" class="btn btn-primary mt-4">Изменить тег</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

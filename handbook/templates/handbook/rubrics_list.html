@@ -1,0 +1,27 @@
+{% extends "base.html "%}
+
+{% block title %}
+Категории
+{% endblock title %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md">
+            <p class="h3 text-center">Что вы хотите посмотреть?</p>
+        </div>
+    </div>
+</div>
+
+{% for rubric in rubrics %}
+<div class="list-group container my-4" style="max-width: 540px;">
+    <a href="{% url 'objects_list' rubric.slug %}"
+       class="list-group-item list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+            <h6 class="mb-1">{{ rubric.name }}</h6>
+        </div>
+    </a>
+</div>
+{% endfor %}
+
+{% endblock content %}

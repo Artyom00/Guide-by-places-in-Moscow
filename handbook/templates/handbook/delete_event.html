@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}
+Удаление события
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row text-center">
+        <div class="col-md mt-4">
+            <form action="{% url 'delete_event' events.slug %}" method="post">
+                {% csrf_token %}
+
+                <p>Вы уверены, что хотите удалить <b>{{ events.title|capfirst }}</b></p>
+                <a href="{{ events.get_absolute_url }}" class="btn btn-primary me-5">Отмена</a>
+                <button type="submit" name="button" class="btn btn-danger">Удалить</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}
+Редактирование события "{{ events.title|capfirst }}"
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <form class="" action="{% url 'edit_event' events.slug %}" method="post">
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="mt-4">
+                    {% if field.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ field.errors }}
+                    </div>
+                    {% endif %}
+
+                    {{ field.label }}
+                    {{ field }}
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary my-4">Изменить событие</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

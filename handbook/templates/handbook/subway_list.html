@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}
+Станции метро
+{% endblock title %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md">
+            <p class="h3 text-center">
+                Список станций метро
+            </p>
+        </div>
+    </div>
+</div>
+
+{% for station in page.object_list %}
+<div class="list-group container my-4" style="max-width: 540px;">
+    <a href="{% url 'subway_places' station.slug %}"
+       class="list-group-item list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+            <h6 class="mb-1">{{ station.name }}</h6>
+        </div>
+    </a>
+</div>
+{% endfor %}
+
+{% endblock content %}

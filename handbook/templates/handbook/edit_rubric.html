@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}
+Редактирование категории "{{ category.name }}"
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-3 mx-auto">
+            <form class="" action="{% url 'update_rubric' category.slug %}" method="post">
+                {% csrf_token %}
+                <div class="mt-4">
+                    {% if form.name.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form.name.errors }}
+                    </div>
+                    {% endif %}
+
+                    {{ form.name.label }}
+                    {{ form.name }}
+                </div>
+                <button type="submit" class="btn btn-primary mt-4">Изменить категорию</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

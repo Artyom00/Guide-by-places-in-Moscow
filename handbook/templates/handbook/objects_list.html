@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load object_type %}
+
+{% block title %}
+Список мест
+{% endblock title %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md">
+            <p class="h3 text-center">
+                {% if rubric %}
+                Все места для категории "{{ rubric.name }}"
+                {% elif objects %}
+                Все события и места с тегом "{{ tag.title|capfirst }}"
+                {% elif tag %}
+                Все места с тегом "{{ tag.title|capfirst }}"
+                {% elif query %}
+                Все места и события найденные по запросу "{{ query|capfirst }}"
+                {% elif subway %}
+                Все места рядом со станцией "{{ subway.name }}"
+                {% elif flag %}
+                Все события в "{{ place_obj.title|capfirst }}" на {{ date }}
+                {% elif old_events_list %}
+                Прошедшие события
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</div>
+
+{% for object in page.object_list %}
+<div class="card my-4 mx-auto">
+    <div class="row g-0">
+        <div class="img-block col-md-4">
+            <img src="{{ object.photo.0 }}" alt="">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body pt-0">
+                <h5 class="card-title">{{ object.title|capfirst }}</h5>
+                <p class="card-text">{{ object.description|truncatewords:15 }}</p>
+                {% if object|object_type == 'History' %}
+                <p><b>Событие прошло<br></b></p>
+                {% endif %}
+                <a class="btn btn-primary btn-sm"
+                   href="{% if object|object_type == 'Place' %}{% url 'place_description' object.slug %}
+                   {% elif object|object_type == 'History' %}{% url 'old_event_url' object.slug %}{% else %}
+                   {% url 'event_description' object.slug %}{% endif %}"
+                   role="button">Подробнее</a>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">
+                    {% if object|object_type == 'History' %}
+                    Теги: {{ object.tags_list|join:", " }}
+                    {% else %}
+                    Теги: {{ object.tags.all|join:", " }}
+                    {% endif %}
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock content %}
